@@ -5,8 +5,13 @@ import 'package:islami/models/sura_model.dart';
 import 'package:islami/tabs/quran_tab/sura_details_screen.dart';
 
 class SurasListView extends StatelessWidget {
-  const SurasListView({super.key, required this.searchText});
+  const SurasListView({
+    super.key,
+    required this.searchText,
+    required this.addToMostRecent,
+  });
   final String searchText;
+  final void Function(int) addToMostRecent;
   @override
   Widget build(BuildContext context) {
     List<SuraModel> suras = SuraModel.allSuras;
@@ -14,7 +19,8 @@ class SurasListView extends StatelessWidget {
     suras = suras
         .where(
           (element) =>
-              element.suraNameAr.contains(searchText) || element.suraNameEn.contains(searchText),
+              element.suraNameAr.contains(searchText) ||
+              element.suraNameEn.contains(searchText),
         )
         .toList();
     return suras.isEmpty
@@ -22,7 +28,11 @@ class SurasListView extends StatelessWidget {
             child: Center(
               child: Text(
                 "No suras found!!",
-                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           )
@@ -32,12 +42,17 @@ class SurasListView extends StatelessWidget {
               children: [
                 Text(
                   "Suras List",
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(height: 10),
                 Expanded(
                   child: ListView.separated(
-                    itemBuilder: (context, index) => drawSuraTile(context, suras[index]),
+                    itemBuilder: (context, index) =>
+                        drawSuraTile(context, suras[index], index),
                     separatorBuilder: (BuildContext context, int index) =>
                         Divider(color: Colors.white, indent: 44, endIndent: 44),
                     itemCount: suras.length,
@@ -48,10 +63,13 @@ class SurasListView extends StatelessWidget {
           );
   }
 
-  Widget drawSuraTile(BuildContext context, SuraModel suraModel) {
+  Widget drawSuraTile(BuildContext context, SuraModel suraModel, int index) {
     return ListTile(
       onTap: () {
-        Navigator.of(context).pushNamed(SuraDetailsScreen.routeName, arguments: suraModel);
+        addToMostRecent(index);
+        Navigator.of(
+          context,
+        ).pushNamed(SuraDetailsScreen.routeName, arguments: suraModel);
       },
       minVerticalPadding: 0,
       contentPadding: EdgeInsets.all(0),
@@ -61,21 +79,37 @@ class SurasListView extends StatelessWidget {
           SvgPicture.asset(Assets.images.suraStar),
           Text(
             (suraModel.id),
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
       title: Text(
         suraModel.suraNameEn,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
       subtitle: Text(
         '${suraModel.ayasCount} Verses',
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
       trailing: Text(
         suraModel.suraNameAr,
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
       ),
     );
   }

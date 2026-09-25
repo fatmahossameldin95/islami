@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:islami/common/app_colors.dart';
+import 'package:islami/data/caching_keys.dart';
 import 'package:islami/gen/assets.gen.dart';
 import 'package:islami/tabs/quran_tab/views/most_recent_view.dart';
 import 'package:islami/tabs/quran_tab/views/suras_list_view.dart';
 import 'package:islami/widgets/tab_bg_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class QuranTab extends StatefulWidget {
   const QuranTab({super.key});
@@ -15,6 +17,14 @@ class QuranTab extends StatefulWidget {
 
 class _QuranTabState extends State<QuranTab> {
   String searchText = '';
+  List<int> mostRecentSuras = [];
+  late SharedPreferences pref;
+  @override
+  void initState() {
+    super.initState();
+    readMostRecentSuras();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -44,7 +54,10 @@ class _QuranTabState extends State<QuranTab> {
                       child: SvgPicture.asset(
                         Assets.images.quranIcon,
 
-                        colorFilter: ColorFilter.mode(AppColors.goldColor, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          AppColors.goldColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
 
@@ -71,9 +84,15 @@ class _QuranTabState extends State<QuranTab> {
                   ),
                 ),
                 SizedBox(height: 20),
-                MostRecentView(),
-                SizedBox(height: 20),
-                SurasListView(searchText: searchText),
+                if (mostRecentSuras.isNotEmpty) ...[
+                  MostRecentView(mostRecentSuras: mostRecentSuras),
+                  SizedBox(height: 20),
+                ],
+
+                SurasListView(
+                  searchText: searchText,
+                  addToMostRecent: addToMostRecent,
+                ),
               ],
             ),
           ),
@@ -81,7 +100,24 @@ class _QuranTabState extends State<QuranTab> {
       ],
     );
   }
-}
-void addToMostRecent(int index){
-  
+
+  void addToMostRecent(int index) {
+    if (mostRecentSuras.contains(index)) {
+      mostRecentSuras.remove(index);
+      mostRecentSuras.insert(0, index);
+    } else {
+      mostRecentSuras.insert(0, index);
+    }
+    List<String> strIndex = mostRecentSuras.map((e) => e.toString()).toList();
+    pref.setStringList(CachingKeys.mostRecent, strIndex);
+    setState(() {});
+  }
+
+  void readMostRecentSuras() async {
+    pref = await SharedPreferences.getInstance();
+
+    List<String> strIndex = pref.getStringList(CachingKeys.mostRecent) ?? [];
+    mostRecentSuras = strIndex.map((e) => int.parse(e)).toList();
+    setState(() {});
+  }
 }
