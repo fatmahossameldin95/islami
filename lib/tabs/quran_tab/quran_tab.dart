@@ -82,3 +82,6 @@ class _QuranTabState extends State<QuranTab> {
     );
   }
 }
+void addToMostRecent(int index){
+  
+}
