@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         OnbordingScreen.routeName: (_) => OnbordingScreen(),
       },
       theme: AppTheme.appTheme,
-      home: HomeScreen(),
+      home: OnbordingScreen(),
     );
   }
 }
