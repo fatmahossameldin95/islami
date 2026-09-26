@@ -11,7 +11,14 @@ class SebhaTab extends StatefulWidget {
 
 class _SebhaTabState extends State<SebhaTab> {
   int counter = 0;
-
+final List<String> tasbeeh = [
+    "سُبْحَانَ اللَّهِ",
+    "الْحَمْدُ لِلَّهِ",
+    "اللَّهُ أَكْبَرُ",
+  ];
+  int currentIndex = 0;
+  double rotationAngle = 0.0;
+  static const int tasbeehCount = 33;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -35,19 +42,41 @@ class _SebhaTabState extends State<SebhaTab> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                SizedBox(height: 20),
+                Image.asset(Assets.images.sebhaHead.path),
                 GestureDetector(
                   onTap: () {
                     setState(() {
                       counter++;
+                      rotationAngle += (1/tasbeehCount);
+                      if (counter > tasbeehCount) {
+                        counter = 0;
+                        currentIndex = (currentIndex + 1) % tasbeeh.length;
+                      }
                     });
                   },
-                  child: Center(
-                    child: Stack(
+                  child: Stack(
+                      alignment: Alignment.center,
                       children: [
-                        Image.asset(Assets.images.sebhaHead.path),
-                        Image.asset(Assets.images.sebhaBody.path),
-                        Center(
-                          child: Text(
+                        AnimatedRotation(
+                          turns: rotationAngle,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeInOut,
+                          child:
+                        Image.asset(Assets.images.sebhaBody.path)),
+                         Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                        Text(
+                            tasbeeh[currentIndex],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                           SizedBox(height: 20),
+                        Text(
                             "$counter",
                             style: const TextStyle(
                               color: Colors.white,
@@ -55,11 +84,11 @@ class _SebhaTabState extends State<SebhaTab> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
+                          ])
                       ],
                     ),
                   ),
-                ),
+                
               ],
             ),
           ),
