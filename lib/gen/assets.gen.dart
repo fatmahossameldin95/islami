@@ -273,6 +273,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/reading.png
   AssetGenImage get reading => const AssetGenImage('assets/images/reading.png');
 
+  /// File path: assets/images/sebha_body.png
+  AssetGenImage get sebhaBody =>
+      const AssetGenImage('assets/images/sebha_body.png');
+
+  /// File path: assets/images/sebha_head.png
+  AssetGenImage get sebhaHead =>
+      const AssetGenImage('assets/images/sebha_head.png');
+
   /// File path: assets/images/sebha_icon.svg
   String get sebhaIcon => 'assets/images/sebha_icon.svg';
 
@@ -322,6 +330,8 @@ class $AssetsImagesGen {
     radioIcon,
     radioScreen,
     reading,
+    sebhaBody,
+    sebhaHead,
     sebhaIcon,
     sebhaScreen,
     suraImage,
